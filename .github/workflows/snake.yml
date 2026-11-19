@@ -26,13 +26,118 @@ jobs:
         with:
           github_user_name: ${{ github.repository_owner }}
           outputs: |
-            assets/snake-dark.svg?color_snake=#9fe8ff&color_dots=#161b22,#2b2a6b,#4a3ab8,#7a5cf0,#b79cff
-            assets/snake-light.svg?color_snake=#6a3df0&color_dots=#ebedf0,#dcd3fb,#bba9f7,#8e73f0,#6a3df0
+            assets/snake.svg?color_snake=#7ee8ff&color_dots=#1b1f45,#3a2f94,#5f46d6,#8f74ff,#c8b8ff
+
+      - name: Put snake into a space panel
+        run: |
+          python3 - assets/snake.svg <<'PY'
+          import random
+          import re
+          import sys
+
+          path = sys.argv[1]
+          svg = open(path, encoding="utf-8").read()
+
+          root = re.search(r"<svg\b[^>]*>", svg)
+          vb = root and re.search(
+              r'viewBox="\s*([-\d.]+)[\s,]+([-\d.]+)[\s,]+([-\d.]+)[\s,]+([-\d.]+)\s*"',
+              root.group(0),
+          )
+          if not vb:
+              print("viewBox not found, leaving the snake as is")
+              sys.exit(0)
+
+          vx, vy, vw, vh = (float(v) for v in vb.groups())
+          random.seed(11)
+
+
+          def put(r_x=(8, 8), r_y=(8, 8)):
+              return (
+                  random.uniform(vx + r_x[0], vx + vw - r_x[1]),
+                  random.uniform(vy + r_y[0], vy + vh - r_y[1]),
+              )
+
+
+          def style(dur):
+              return f"animation-duration:{dur:.2f}s;animation-delay:-{random.uniform(0, dur):.2f}s"
+
+
+          items = []
+          for _ in range(int(vw * vh / 2600)):
+              x, y = put()
+              r = random.choice([0.6, 0.8, 1.0, 1.2, 1.5])
+              fill = random.choice(["#ffffff", "#ffffff", "#cfe3ff", "#ffe9c7"])
+              items.append(
+                  f'<circle class="sp-s" cx="{x:.1f}" cy="{y:.1f}" r="{r}" fill="{fill}" '
+                  f'style="{style(random.uniform(2.6, 6.5))}"/>'
+              )
+          for _ in range(int(vw * vh / 12000)):
+              x, y = put()
+              r = random.choice([1.2, 1.6, 2.0])
+              items.append(
+                  f'<circle class="sp-b" cx="{x:.1f}" cy="{y:.1f}" r="{r}" fill="#ffffff" '
+                  f'style="{style(random.uniform(3.5, 8.0))}"/>'
+              )
+
+
+          def sparkle(cx, cy, a):
+              b = a * 0.16
+              return (
+                  f"M{cx:.1f} {cy - a:.1f}Q{cx + b:.1f} {cy - b:.1f} {cx + a:.1f} {cy:.1f}"
+                  f"Q{cx + b:.1f} {cy + b:.1f} {cx:.1f} {cy + a:.1f}"
+                  f"Q{cx - b:.1f} {cy + b:.1f} {cx - a:.1f} {cy:.1f}"
+                  f"Q{cx - b:.1f} {cy - b:.1f} {cx:.1f} {cy - a:.1f}Z"
+              )
+
+
+          spots = []
+          for _ in range(500):
+              if len(spots) >= 6:
+                  break
+              x, y = put((24, 24), (16, 16))
+              if all((x - px) ** 2 + (y - py) ** 2 > 110**2 for px, py in spots):
+                  spots.append((x, y))
+          for x, y in spots:
+              items.append(
+                  f'<path class="sp-k" d="{sparkle(x, y, random.uniform(5, 8))}" fill="#ffffff" '
+                  f'style="{style(random.uniform(4.0, 7.5))}"/>'
+              )
+
+          panel = f"""<defs>
+          <linearGradient id="sp-sky" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#04050d"/><stop offset=".55" stop-color="#0a0a22"/><stop offset="1" stop-color="#150b30"/></linearGradient>
+          <radialGradient id="sp-n1"><stop offset="0" stop-color="#6a3df0" stop-opacity=".38"/><stop offset="1" stop-color="#6a3df0" stop-opacity="0"/></radialGradient>
+          <radialGradient id="sp-n2"><stop offset="0" stop-color="#1f7ae0" stop-opacity=".30"/><stop offset="1" stop-color="#1f7ae0" stop-opacity="0"/></radialGradient>
+          <radialGradient id="sp-n3"><stop offset="0" stop-color="#d0409a" stop-opacity=".20"/><stop offset="1" stop-color="#d0409a" stop-opacity="0"/></radialGradient>
+          <clipPath id="sp-frame"><rect x="{vx}" y="{vy}" width="{vw}" height="{vh}" rx="16"/></clipPath>
+          </defs>
+          <style>
+          .sp-s,.sp-b,.sp-k{{animation-name:sp-tw;animation-timing-function:ease-in-out;animation-iteration-count:infinite}}
+          .sp-b{{animation-name:sp-blink}}
+          .sp-k{{animation-name:sp-spark;transform-box:fill-box;transform-origin:center}}
+          @keyframes sp-tw{{0%,100%{{opacity:.25}}50%{{opacity:1}}}}
+          @keyframes sp-blink{{0%,100%{{opacity:0}}50%{{opacity:1}}}}
+          @keyframes sp-spark{{0%,100%{{opacity:0;transform:scale(.4)}}50%{{opacity:1;transform:scale(1)}}}}
+          @media (prefers-reduced-motion:reduce){{.sp-s,.sp-b,.sp-k{{animation:none;opacity:.8}}}}
+          </style>
+          <g clip-path="url(#sp-frame)">
+          <rect x="{vx}" y="{vy}" width="{vw}" height="{vh}" fill="url(#sp-sky)"/>
+          <ellipse cx="{vx + vw * .2}" cy="{vy + vh * .3}" rx="{vw * .38}" ry="{vh * .6}" fill="url(#sp-n1)"/>
+          <ellipse cx="{vx + vw * .76}" cy="{vy + vh * .72}" rx="{vw * .4}" ry="{vh * .56}" fill="url(#sp-n2)"/>
+          <ellipse cx="{vx + vw * .56}" cy="{vy + vh * .2}" rx="{vw * .26}" ry="{vh * .4}" fill="url(#sp-n3)"/>
+          {chr(10).join(items)}
+          </g>
+          """
+
+          svg = svg[: root.end()] + panel + svg[root.end():]
+          open(path, "w", encoding="utf-8").write(svg)
+          print("space panel added:", len(items), "stars,", f"viewBox {vx} {vy} {vw} {vh}")
+          PY
 
       - name: Commit result
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm -f --ignore-unmatch assets/snake-dark.svg assets/snake-light.svg
           git add assets
           git diff --cached --quiet || git commit -m "chore: update contribution snake"
           git push
