@@ -2,7 +2,7 @@
 
 <div align="center">
   <a href="https://t.me/@KefirK3">
-    <img src="telegram-button.svg" height="70" alt="Telegram" />
+    <img src="telegram-button.svg" height="100" alt="Telegram" />
   </a>
 </div>
 <br>
