@@ -1,4 +1,6 @@
-<img src="banner-name-v2.svg" width="100%" alt="Привет, я Васин Иван" />
+<div align="center">
+  <img src="banner-name-v2.svg" width="100%" alt="Привет, я Васин Иван" />
+</div>
 
 <div align="center">
   <a href="https://t.me/KefirK3">
