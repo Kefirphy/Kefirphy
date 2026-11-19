@@ -5,7 +5,7 @@
     <img src="telegram-button.svg" height="60" alt="Telegram" />
   </a>
 </div>
-
+<br>
 <div align="center">
   <img src="assets/snake.svg" width="100%" alt="Змейка, которая ест мои коммиты" />
 </div>
