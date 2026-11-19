@@ -1,4 +1,4 @@
-<img src="banner.svg" width="100%" alt="Космос с мерцающими звёздами" />
+<img src="banner-compact.svg" width="100%" alt="Космос с мерцающими звёздами" />
 
 <div align="center">
 
