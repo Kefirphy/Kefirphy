@@ -11,6 +11,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: snake
+  cancel-in-progress: false
+
 jobs:
   generate:
     runs-on: ubuntu-latest
@@ -139,5 +143,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git rm -f --ignore-unmatch assets/snake-dark.svg assets/snake-light.svg
           git add assets
-          git diff --cached --quiet || git commit -m "chore: update contribution snake"
-          git push
+          git diff --cached --quiet && echo "nothing to commit" && exit 0
+          git commit -m "chore: update contribution snake"
+          git pull --rebase origin main
+          git push origin HEAD:main
