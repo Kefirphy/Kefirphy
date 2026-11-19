@@ -1,16 +1,13 @@
-## Hi there 👋
+<img src="banner.svg" width="100%" alt="Космос с мерцающими звёздами" />
 
-<!--
-**Kefirphy/Kefirphy** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+### Привет, я Васин Иван
 
-Here are some ideas to get you started:
+[Telegram](https://t.me/@KefirK3)
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+<div align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/snake-dark.svg" />
+    <source media="(prefers-color-scheme: light)" srcset="assets/snake-light.svg" />
+    <img alt="Змейка, которая ест мои коммиты" src="assets/snake-dark.svg" />
+  </picture>
+</div>
