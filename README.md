@@ -1,8 +1,6 @@
-<img src="banner-compact.svg" width="100%" alt="Космос с мерцающими звёздами" />
+<img src="banner-name.svg" width="100%" alt="Космос с мерцающими звёздами" />
 
 <div align="center">
-
-## Привет, я Васин Иван
 
 [Telegram](https://t.me/@KefirK3)
 
