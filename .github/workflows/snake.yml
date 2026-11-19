@@ -1,1 +1,38 @@
+name: Generate Snake
 
+on:
+  schedule:
+    - cron: "17 3 * * *" # раз в сутки
+  workflow_dispatch: # кнопка ручного запуска во вкладке Actions
+  push:
+    branches: [main]
+    paths: [".github/workflows/snake.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare folder
+        run: mkdir -p assets
+
+      - name: Generate snake
+        uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            assets/snake-dark.svg?color_snake=#9fe8ff&color_dots=#161b22,#2b2a6b,#4a3ab8,#7a5cf0,#b79cff
+            assets/snake-light.svg?color_snake=#6a3df0&color_dots=#ebedf0,#dcd3fb,#bba9f7,#8e73f0,#6a3df0
+
+      - name: Commit result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets
+          git diff --cached --quiet || git commit -m "chore: update contribution snake"
+          git push
