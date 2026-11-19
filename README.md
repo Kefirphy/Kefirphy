@@ -1,9 +1,9 @@
 <img src="banner-name-v2.svg" width="100%" alt="Космос с мерцающими звёздами" />
 
 <div align="center">
-
-[Telegram](https://t.me/@KefirK3)
-
+  <a href="https://t.me/@KefirK3">
+    <img src="telegram-button.svg" height="60" alt="Telegram" />
+  </a>
 </div>
 
 <div align="center">
